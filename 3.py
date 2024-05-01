@@ -97,8 +97,7 @@ def processing(arrival_rate, service_rate, event_cap):
                 idle_since = 0
                 
             # add to the event list
-            leaving_time = leaving_event[0] + exponential_distribution(1,service_rate)[0]
-            event_list.append((leaving_time, "out"))
+            event_list.append((leaving_event[0] + exponential_distribution(1,service_rate)[0], "out"))
             num_events += 1
             total_queue_time += arriving_event[0]- timer
             total_waiting_time += arriving_event[0] - timer
