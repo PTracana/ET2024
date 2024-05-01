@@ -48,8 +48,6 @@ class MM1Queue:
             self.schedule_event(next_departure_time, 'processing')
             self.server_free = False # Server is now gonna process the first element in the FIFO queue
 
-            self.total_time_in_queue += event_time - self.last_event_time
-            self.last_event_time = event_time
 
             self.packet_queue.get() # Remove first element in queue
 
@@ -75,7 +73,7 @@ class MM1Queue:
         # Theoretical Average Queue Size (Lq)
         Lq = self.rho**2 / (1 - self.rho)
         print("Theoretical Average Queue Size",Lq)
-        '''
+        
         # Theoretical Average Packet Time in the system
         Ws = 1 / (self.miu_ - self.lambda_)
         print("Theoretical Average Packet Time in the system",Ws)
@@ -85,17 +83,17 @@ class MM1Queue:
         # Theoretical number of events in the system
         Ls = Ws * self.lambda_
         print("Theoretical number of events in the system",Ls)
-        '''
-        average_queue_size= self.packet_queue.qsize()/ (self.num_arrivals + 1)
-        print("Experimental Average queue size:",average_queue_size)
+        
+        #average_queue_size= self.packet_queue.qsize()/ (self.num_arrivals + 1)
+        #print("Experimental Average queue size:",average_queue_size)
 
 def main():
     '''
     To provide combinations of lambda and miu that have an average queue size of 1, 10, 100 and 1000, use the following parameters for each target average queue size
-    Lq = 1 -> rho ≃ 0.70710 -> lambda = 7071 and miu = 10000
-    Lq = 10 -> rho ≃ 0.95346 -> lambda = 9534 and miu = 10000
-    Lq = 100 -> rho ≃ 0.99503 -> lambda = 9950 and miu = 10000
-    Lq = 1000 -> rho ≃ 0.99950 -> lambda = 9995 and miu = 10000
+    Lq = 1 -> rho ≃ 0.6180 -> lambda = 6180 and miu = 10000
+    Lq = 10 -> rho ≃ 0.9160 -> lambda = 9160 and miu = 10000
+    Lq = 100 -> rho ≃ 0.9902 -> lambda = 9902 and miu = 10000
+    Lq = 1000 -> rho ≃ 0.999 -> lambda = 9990 and miu = 10000
 
     '''
     lambda_ = [0.7]
