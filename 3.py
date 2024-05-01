@@ -2,6 +2,7 @@ import random
 import numpy as np
 import math 
 import time
+import queue as qu
 
 def exponential_distribution(n,l):
     # Generates the sequence of events according to the exponential distribution
@@ -48,7 +49,7 @@ def stats(total_waiting_time, num_events, total_queue_time, total_time, idle, ar
 
 def processing(arrival_rate, service_rate, event_cap):
     event_list = []
-    queue = []
+    queue = qu.Queue()
     server_free = True
   
 
@@ -72,11 +73,12 @@ def processing(arrival_rate, service_rate, event_cap):
         #step 2
         if current_event[1] == "in":
             # add tuple to list
-            queue.append(current_event)
+            queue.put(current_event)
             
             # new event generation
             next_event = (current_event[0] + exponential_distribution(1,arrival_rate)[0], "in")
             event_list.append(next_event)
+            sorted(event_list, key=lambda x: x[0])
             #jump to 4
             
         #step 3 
@@ -85,18 +87,18 @@ def processing(arrival_rate, service_rate, event_cap):
             server_free = True
             num_events += 1
             
-            total_time_in_system += total_time_in_system + ()
+            
             #idle_since = arriving_event[0]
             
             #total_waiting_time += arriving_event[0] - timer 
             
         #step 4
         # server is free queue is empty 
-        if (server_free and not queue):
+        if (server_free and queue.empty()):
             #timer = arriving_event[0]
             continue
         else:  
-            leaving_event = queue.pop(0)
+            leaving_event = queue.get()
             server_free = False
         
             #if idle_since != 0:
@@ -106,6 +108,8 @@ def processing(arrival_rate, service_rate, event_cap):
                 
             # add to the event list
             event_list.append((leaving_event[0] + exponential_distribution(1,service_rate)[0], "out"))
+            sorted(event_list, key=lambda x: x[0])
+            
             
             #total_queue_time += arriving_event[0]- timer
             #total_waiting_time += arriving_event[0] - timer
