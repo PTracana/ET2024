@@ -51,8 +51,10 @@ def processing(arrival_rate, service_rate, event_cap):
     queue = []
     server_free = True
   
-    system_time = 0
+
     total_waiting_time = 0
+    total_time_in_system = 0
+    
     total_queue_time = 0
     num_events = 1
     
@@ -65,14 +67,15 @@ def processing(arrival_rate, service_rate, event_cap):
     
     while event_list:
         # "reading" packet arrival step 1
-        arriving_event = event_list.pop(0)
-        
+        current_event = event_list.pop(0)
+    
         #step 2
-        if arriving_event[1] == "in":
+        if current_event[1] == "in":
             # add tuple to list
-            queue.append(arriving_event)
+            queue.append(current_event)
+            
             # new event generation
-            next_event = (arriving_event[0] + exponential_distribution(1,arrival_rate)[0], "in")
+            next_event = (current_event[0] + exponential_distribution(1,arrival_rate)[0], "in")
             event_list.append(next_event)
             #jump to 4
             
@@ -82,6 +85,7 @@ def processing(arrival_rate, service_rate, event_cap):
             server_free = True
             num_events += 1
             
+            total_time_in_system += total_time_in_system + ()
             #idle_since = arriving_event[0]
             
             #total_waiting_time += arriving_event[0] - timer 
