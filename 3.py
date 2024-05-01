@@ -16,22 +16,31 @@ def exponential_distribution(n,l):
         deltat = -math.log(1-u)/l
         time_ += deltat
         time_intervals[i] = deltat
-        event_timestamp[i] = int(math.floor(time_))
+        event_timestamp[i] = float(time_)
         i -= 1
     return event_timestamp
 
-def processing(arrival_rate, service_rate, time_cap):
+def stats(total_waiting_time, num_events, total_queue_time, total_time, idle):
+    average_packet_waiting_time = total_waiting_time/num_events
+    average_packet_time_in_system =  (total_waiting_time + total_queue_time)/num_events
+    total_busy_time = (total_time - idle) / total_time *100
+    print("Average packet waiting time: ", average_packet_waiting_time)
+    print("Average packet time in system: ", average_packet_time_in_system)
+    print("Total busy time: ", total_busy_time)
+    return
+
+def processing(arrival_rate, service_rate, event_cap):
     event_list = []
     queue = []
     server_free = True
     total_waiting_time = 0
     total_queue_time = 0
-    num_events = 0
+    num_events = 1
     idle = 0
     timer = 0
     event_list.append((0,"in"))
-
-    time = 0
+    
+    
     while event_list:
         # "reading" packet arrival step 1
         arriving_event = event_list.pop(0)
@@ -41,10 +50,10 @@ def processing(arrival_rate, service_rate, time_cap):
             # add tuple to list
             queue.append(arriving_event)
             # new event generation
-            next_event = (arriving_event[0] + exponential_distribution(1,arrival_rate), "in")
+            next_event = (arriving_event[0] + exponential_distribution(1,arrival_rate)[0], "in")
+            print(next_event)
             event_list.append(next_event)
             
-            event_list = sorted(event_list, key=lambda x: x[0])   
             
         #step 3 
         else:
@@ -57,34 +66,31 @@ def processing(arrival_rate, service_rate, time_cap):
         if (server_free and not queue):
             idle += arriving_event[0] - timer
             timer = arriving_event[0]
+            continue
         
         #process the queue step 5
-        arriving_event = queue.pop(0)
-        server_free = False
+        if server_free:
+            arriving_event = queue.pop(0)
+            server_free = False
         
-        # add to the event list
+            # add to the event list
+            event_list.append((arriving_event[0] + exponential_distribution(1,service_rate)[0], "out"))
+            num_events += 1
+            total_queue_time += arriving_event[0]- timer
+            total_waiting_time += arriving_event[0] - timer
+            timer = arriving_event[0]
         
-        event_list.append((arriving_event[0] + exponential_distribution(1,service_rate), "out"))
-        
-        #falta dar sort ao event idk
-        
-        num_events += 1
-        total_queue_time += arriving_event[0]- timer
-        total_waiting_time += arriving_event[0] - timer
-        timer = arriving_event[0]
-        
-        if timer > time_cap:
+        #num events is over event cap
+        if num_events >= event_cap:
             break
     total_time = timer
     
-
+    stats(total_waiting_time, num_events, total_queue_time, total_time, idle)
+    return 
     
-        
-
-        
-
-
 
 if __name__== "__main__":
-    
-    
+    arrival_lambda = float(input("Arrival rate\n"))
+    service_lambda = float(input("Service rate\n"))
+    time_cap = int(input("event cap\n"))
+    processing(arrival_lambda, service_lambda, time_cap)
