@@ -51,10 +51,11 @@ def processing(arrival_rate, service_rate, event_cap):
     queue = []
     server_free = True
   
+    system_time = 0
     total_waiting_time = 0
-
     total_queue_time = 0
     num_events = 1
+    
     #
     idle = 0
     timer = 0
@@ -73,35 +74,38 @@ def processing(arrival_rate, service_rate, event_cap):
             # new event generation
             next_event = (arriving_event[0] + exponential_distribution(1,arrival_rate)[0], "in")
             event_list.append(next_event)
-            
+            #jump to 4
             
         #step 3 
         else:
             # else mark server as free and count the waiting time
             server_free = True
-            idle_since += arriving_event[0]
+            num_events += 1
             
-            total_waiting_time += arriving_event[0] - timer 
+            #idle_since = arriving_event[0]
+            
+            #total_waiting_time += arriving_event[0] - timer 
             
         #step 4
-        # server is free queue is empty calculate idle time 
+        # server is free queue is empty 
         if (server_free and not queue):
-            timer = arriving_event[0]
-
-        elif  server_free and queue:
+            #timer = arriving_event[0]
+            continue
+        else:  
             leaving_event = queue.pop(0)
             server_free = False
         
-            if idle_since != 0:
-                idle += leaving_event[0] - idle_since
-                idle_since = 0
+            #if idle_since != 0:
+                #idle += leaving_event[0] - idle_since
+                #idle_since = 0
+                
                 
             # add to the event list
             event_list.append((leaving_event[0] + exponential_distribution(1,service_rate)[0], "out"))
-            num_events += 1
-            total_queue_time += arriving_event[0]- timer
-            total_waiting_time += arriving_event[0] - timer
-            timer = arriving_event[0]
+            
+            #total_queue_time += arriving_event[0]- timer
+            #total_waiting_time += arriving_event[0] - timer
+            #timer = arriving_event[0]
 
         
         #num events is over event cap
