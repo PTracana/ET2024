@@ -45,7 +45,7 @@ def stats( total_queue_time, total_processing_time,packets_served ,ending_timer,
 
     #falta o teorico
     print ("------------------------------------")
-    total_busy_time =  (ending_timer - system_idle_time)/ending_timer *100
+    total_busy_time =  (ending_timer - system_idle_time)/ending_timer *100 
     print("Total busy time %: ", total_busy_time)
     
     return
@@ -113,7 +113,8 @@ def processing(arrival_rate, service_rate, event_cap):
         server_free = False
     
         if idle_since is not None:
-            system_idle_time += leaving_event[0] - idle_since
+            system_idle_time += current_event[0] - idle_since
+            print (leaving_event[0] , "|", idle_since, )
             idle_since = None
             
             
