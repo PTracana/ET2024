@@ -45,8 +45,8 @@ def stats( total_queue_time, total_processing_time,packets_served ,ending_timer,
 
     #falta o teorico
     print ("------------------------------------")
-    total_busy_time =  (ending_timer - system_idle_time)/ending_timer
-    print("Total busy time: ", total_busy_time)
+    total_busy_time =  (ending_timer - system_idle_time)/ending_timer *100
+    print("Total busy time %: ", total_busy_time)
     
     return
 
@@ -133,6 +133,9 @@ def processing(arrival_rate, service_rate, event_cap):
             break
             
     ending_timer = timer
+    
+    print(system_idle_time)
+    print (ending_timer)
     
     stats(total_queue_time, total_processing_time, packets_served, ending_timer, system_idle_time, arrival_rate, service_rate)
     return 
